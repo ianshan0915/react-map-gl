@@ -1,5 +1,8 @@
 # CHANGELOG
 
+# Version 3.3.0-alpha.3
+- Add alternate interaction callback `onViewStateChange`
+
 # Version 3.3.0-alpha.2
 - Move mapbox-gl import from mapbox wrapper to `StaticMap`
 

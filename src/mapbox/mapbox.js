@@ -39,8 +39,8 @@ const propTypes = {
   visible: PropTypes.bool, /** Whether the map is visible */
 
   // Map view state
-  width: PropTypes.number.isRequired, /** The width of the map. */
-  height: PropTypes.number.isRequired, /** The height of the map. */
+  width: PropTypes.number, /** The width of the map. */
+  height: PropTypes.number, /** The height of the map. */
 
   viewState: PropTypes.object, /** object containing lng/lat/zoom/bearing/pitch */
 
@@ -169,17 +169,13 @@ export default class Mapbox {
       // TODO - need to call onload again, need to track with Promise?
       props.onLoad();
     } else {
-      const mapOptions = {
+      const mapOptions = Object.assign({}, props, this._getMapboxViewStateProps(props), {
         container: props.container || document.body,
-        center: [props.longitude, props.latitude],
-        zoom: props.zoom,
-        pitch: props.pitch,
-        bearing: props.bearing,
         style: props.mapStyle,
         interactive: false,
         attributionControl: props.attributionControl,
         preserveDrawingBuffer: props.preserveDrawingBuffer
-      };
+      });
       // We don't want to pass a null or no-op transformRequest function.
       if (props.transformRequest) {
         mapOptions.transformRequest = props.transformRequest;
@@ -252,7 +248,9 @@ export default class Mapbox {
 
   // Note: needs to be called after render (e.g. in componentDidUpdate)
   _updateMapSize(oldProps, newProps) {
-    const sizeChanged = oldProps.width !== newProps.width || oldProps.height !== newProps.height;
+    const newSize = this._getSize(newProps);
+    const oldSize = this._getSize(oldProps);
+    const sizeChanged = oldSize.width !== newSize.width || oldSize.height !== newSize.height;
     if (sizeChanged) {
       this._map.resize();
     }
@@ -271,12 +269,7 @@ export default class Mapbox {
       newViewState.altitude !== oldViewState.altitude;
 
     if (viewportChanged) {
-      this._map.jumpTo({
-        center: [newViewState.longitude, newViewState.latitude],
-        zoom: newViewState.zoom,
-        bearing: newViewState.bearing,
-        pitch: newViewState.pitch
-      });
+      this._map.jumpTo(this._getMapboxViewStateProps(newProps));
 
       // TODO - jumpTo doesn't handle altitude
       if (newViewState.altitude !== oldViewState.altitude) {
@@ -287,6 +280,25 @@ export default class Mapbox {
 
   _getViewState(props) {
     return props.viewState || props;
+  }
+
+  _getSize(props) {
+    const width = props.width || 0;
+    const height = props.height || 0;
+    return {width, height};
+  }
+
+  _getMapboxViewStateProps(props) {
+    const viewState = this._getViewState(props);
+    const {width, height} = this._getSize(props);
+    return {
+      center: [viewState.longitude, viewState.latitude],
+      zoom: viewState.zoom,
+      bearing: viewState.bearing,
+      pitch: viewState.pitch,
+      width,
+      height
+    };
   }
 }
 

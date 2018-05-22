@@ -42,7 +42,7 @@ The object passed to the callback contains viewport properties such as `longitud
 If the map is intended to be interactive, the app uses this prop to listen to map updates and update the props accordingly.
 
 Note:
-* The `onViewStateChange` is a newer version of the `onViewportChange` callback. Both are supported and provide equivalent functionality. The main difference is that `onViewStateChange` is aligned with deck.gl API conventions.
+* `onViewStateChange` is a newer version of the `onViewportChange` callback. Both are supported and provide equivalent functionality.
 
 ##### `onViewportChange` {Function}
 

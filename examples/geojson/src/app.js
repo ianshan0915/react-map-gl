@@ -18,7 +18,7 @@ export default class App extends Component {
     year: 2015,
     data: null,
     hoveredFeature: null,
-    viewport: {
+    viewState: {
       latitude: 40,
       longitude: -100,
       zoom: 3,
@@ -46,8 +46,8 @@ export default class App extends Component {
 
   _resize = () => {
     this.setState({
-      viewport: {
-        ...this.state.viewport,
+      viewState: {
+        ...this.state.viewState,
         width: this.props.width || window.innerWidth,
         height: this.props.height || window.innerHeight
       }
@@ -80,7 +80,7 @@ export default class App extends Component {
     }
   };
 
-  _onViewportChange = viewport => this.setState({viewport});
+  _onViewportChange = viewState => this.setState({viewState});
 
   _onHover = event => {
     const {features, srcEvent: {offsetX, offsetY}} = event;
@@ -103,12 +103,14 @@ export default class App extends Component {
 
   render() {
 
-    const {viewport, mapStyle} = this.state;
+    const {viewState, mapStyle} = this.state;
 
     return (
       <div>
         <MapGL
-          {...viewport}
+          viewState={viewState}
+          width={viewState.width}
+          height={viewState.height}
           mapStyle={mapStyle}
           onViewportChange={this._onViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}

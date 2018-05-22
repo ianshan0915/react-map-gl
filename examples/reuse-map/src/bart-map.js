@@ -32,7 +32,7 @@ export default class BartMap extends Component {
     }
   };
 
-  _onViewportChange = viewState => this.setState({viewState});
+  _onViewStateChange = ({viewState}) => this.setState({viewState};
 
   _renderMarker(station, i) {
     const {name, coordinates} = station;
@@ -48,14 +48,14 @@ export default class BartMap extends Component {
     const {viewState, settings} = this.state;
     return (
       <MapGL
-        {...viewState}
         {...settings}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapStyle={mapStyle}
 
         width={500}
         height={500}
-        onViewportChange={this._onViewportChange}
+        viewState={viewState}
+        onViewStateChange={this._onViewStateChange}
 
         reuseMaps={true}
       >
